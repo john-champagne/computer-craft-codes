@@ -453,17 +453,9 @@ function mvmt:pop_closest(blocks, state)
 end
 
 function mvmt:build_with_callback(blocks, callback)
-    sort_func = function(a,b) if a.y == b.y then 
-        da = math.abs(self.pos.x - a.x) + math.abs(self.pos.z - a.z)
-        db = math.abs(self.pos.x - b.x) + math.abs(self.pos.z - b.z)
-        return da < db
-    else
-        return a.y < b.y
-    end end
-
     -- Sort all blocks into groups by y level
-    y_levels = {}
-    y_groups = {}
+    local y_levels = {}
+    local y_groups = {}
     for i,v in ipairs(blocks) do
         if not __is_in_list(v.y,y_levels) then
             table.insert(y_levels,v.y)
@@ -472,41 +464,15 @@ function mvmt:build_with_callback(blocks, callback)
         table.insert(y_groups[v.y],v)
     end
     table.sort(y_levels)
-    print("Y levels:")
-    for i,v in ipairs(y_levels) do print(v); print(#y_groups[v]) end
 
     for _,y in ipairs(y_levels) do
-        print("Executing y group")
-        print(y)
         local group = y_groups[y]
         while #group > 0 do
-            -- Find closest block in group
-            -- local li = 1
-            -- local lv = self:taxi_distance(group[1])
-            -- for i,v in ipairs(group) do
-            --     v2 = self:taxi_distance(v)
-            --     if v2 < lv then
-            --         lv = v2
-            --         li = i
-            --     end
-            -- end
             local target = self:pop_closest(group, self:get_state())
             self:goto(target + vector.new(0,1,0))
-            --table.remove(group,li)
             callback()
         end
     end
-    -- -- Sort by y-level.
-    -- table.sort(blocks, sort_func)
-    
-    -- for i,v in ipairs(blocks) do
-    --     -- Go to the block ABOVE the target.
-    --     self:goto(v + vector.new(0,1,0))
-
-    --     -- Do callback.
-    --     callback()
-    --     table.sort(blocks, sort_func)
-    -- end
 end
 
 --- Get the state of the object.
