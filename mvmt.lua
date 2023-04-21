@@ -237,10 +237,6 @@ function mvmt:goto(p)
     if dy > 0 then table.insert(directions_to_move,'y+') elseif dy < 0 then table.insert(directions_to_move,'y-') end
     if dz > 0 then table.insert(directions_to_move,'z+') elseif dz < 0 then table.insert(directions_to_move,'z-') end
     
-    local h = "Directions "
-    for i,v in pairs(directions_to_move) do h = h .. v .. ", " end
-
-
     -- First Pass
     -- This will move in the directions that are CLEAR
     for i,v in pairs(directions_to_move) do
@@ -267,8 +263,6 @@ function mvmt:goto(p)
             end
         end
     end
-    h = "Directions "
-    for i,v in pairs(directions_to_move) do h = h .. v .. ", " end
 
     -- 2nd Pass
     -- This will move in the directions that weren't clear initially
@@ -279,14 +273,11 @@ function mvmt:goto(p)
             if v2 == 'x' then
                 self:face(v)
                 self:forward(math.abs(dx))
-                directions_to_move[i] = nil
             elseif v2 == 'z' then
                 self:face(v)
                 self:forward(math.abs(dz))
-                directions_to_move[i] = nil
             elseif v2 == 'y' then
                 if dy > 0 then self:up(math.abs(dy)) else self:down(math.abs(dy)) end
-                directions_to_move[i] = nil
             end
         end
     end
